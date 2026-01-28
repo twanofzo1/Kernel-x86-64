@@ -10,7 +10,7 @@ typedef signed long i64;
 typedef unsigned long u64;
 typedef float f32;
 typedef double f64;
-typedef bool u8;
+typedef u8 bool;
 
 #define true 1
 #define false 0

@@ -75,7 +75,7 @@ add_custom_command(
             $<TARGET_OBJECTS:kernel_asm> $<TARGET_OBJECTS:kernel_c>
     DEPENDS kernel_asm kernel_c
     COMMENT "Linking kernel binary"
-    VERBATIM
+    COMMAND_EXPAND_LISTS
 )
 
 add_custom_target(kernel DEPENDS ${OUTPUT_DIR}/kernel)
@@ -88,7 +88,7 @@ add_custom_command(
             $<TARGET_OBJECTS:kernel_asm> $<TARGET_OBJECTS:kernel_c>
     DEPENDS kernel_asm kernel_c
     COMMENT "Linking kernel ELF (for debugging)"
-    VERBATIM
+    COMMAND_EXPAND_LISTS
 )
 
 add_custom_target(kernel_elf DEPENDS ${OUTPUT_DIR}/kernel.elf)
