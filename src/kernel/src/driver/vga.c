@@ -8,6 +8,11 @@
 #define CURSOR_END_ADDR 0x0B                     // Cursor shape end scanline 
 #define CURSOR_DISABLE_BIT_NR 5
 
+
+volatile vga_char* TEXT_AREA = (vga_char*) VGA_START;
+
+
+
 u16 get_cursor_pos(){
     byte_out(CURSOR_PORT_COMMAND, CURSOR_LOCATION_HIGH_BYTE_ADDR);
     u8 high = byte_in(CURSOR_PORT_DATA);
@@ -33,14 +38,10 @@ void hide_cursor(){
 }
 
 
-
-
-volatile vga_char *TEXT_AREA = (vga_char*) VGA_START;
-
 void clear_win(const u8 fg_color, const u8 bg_color){
     vga_char clear_char = {
         .character=' ',
-        .style=COLOR_WHITE
+        .style=VGA_COLOR_BLACK
     };
 
     for(unsigned int i = 0; i < VGA_EXTENT; i++){
@@ -63,7 +64,6 @@ void put_str(const char *string, const u8 fg_color, const u8 bg_color){
         put_char(*string++, fg_color, bg_color);
         advance_cursor(); 
     }
-    
 }
 
 
