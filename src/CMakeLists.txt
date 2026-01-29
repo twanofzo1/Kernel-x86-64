@@ -53,7 +53,7 @@ set(CMAKE_ASM_NASM_OBJECT_FORMAT elf64)
 set(CMAKE_ASM_NASM_COMPILE_OBJECT "<CMAKE_ASM_NASM_COMPILER> -f elf64 -o <OBJECT> <SOURCE>")
 
 # C compiler flags for freestanding 64-bit kernel
-set(CMAKE_C_FLAGS "-ggdb -ffreestanding -m64 -fno-pie -no-pie -c")
+set(CMAKE_C_FLAGS "-ffreestanding -fno-stack-protector -mno-red-zone -Wall -Wextra -O2 -c")
 
 # Gather kernel source files
 file(GLOB_RECURSE KERNEL_C_SOURCES "${KERNEL_DIR}/src/*.c")

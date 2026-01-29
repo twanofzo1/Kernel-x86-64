@@ -30,6 +30,8 @@ typedef struct {
     u8 character;
     u8 style;
 } __attribute__((packed)) vga_char;
+_Static_assert(sizeof(vga_char) == 2, "VGA entry must be 2 bytes");
+
 
 u16 get_cursor_pos();
 void show_cursor();

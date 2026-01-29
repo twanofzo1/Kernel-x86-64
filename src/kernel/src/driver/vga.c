@@ -13,6 +13,10 @@ volatile vga_char* TEXT_AREA = (vga_char*) VGA_START;
 
 
 
+
+
+
+
 u16 get_cursor_pos(){
     byte_out(CURSOR_PORT_COMMAND, CURSOR_LOCATION_HIGH_BYTE_ADDR);
     u8 high = byte_in(CURSOR_PORT_DATA);
@@ -41,7 +45,7 @@ void hide_cursor(){
 void clear_win(const u8 fg_color, const u8 bg_color){
     vga_char clear_char = {
         .character=' ',
-        .style=VGA_COLOR_BLACK
+        .style=vga_color(fg_color,bg_color)
     };
 
     for(unsigned int i = 0; i < VGA_EXTENT; i++){
@@ -50,11 +54,34 @@ void clear_win(const u8 fg_color, const u8 bg_color){
 }
 
 void put_char(const char character, const u8 fg_color, const u8 bg_color){
+    u16 pos = get_cursor_pos();
+    
+
+    if (character == '\n'){
+        int offset = VGA_WIDTH - (pos % VGA_WIDTH)-1;
+        for (int i = 0; i < offset; i++){
+            vga_char c = {
+                .character=' ',
+                .style=vga_color(fg_color,bg_color)
+            };
+            advance_cursor(); 
+            TEXT_AREA[pos] = c;
+        }
+        return;
+    }
+
+    if (character == '\t'){
+
+    }
+
+    if (character == '\r'){
+
+    }
+
     vga_char c = {
         .character=character,
         .style=vga_color(fg_color,bg_color)
     };
-    u16 pos = get_cursor_pos();
     TEXT_AREA[pos] = c;
 }
 

@@ -1,10 +1,10 @@
+#include <init.h>
 #include <io.h>
-
+#include <driver/vga.h>
 int main(){
-    set_cursor_pos(0,0);
-    clear_win(VGA_COLOR_BLACK,VGA_COLOR_BLACK);
-
-    printf("hello im %i years old",21);
+    init();
+    printf_color("hello\ntest",VGA_COLOR_BLUE);
+    printf_color("hello\ntest",VGA_COLOR_RED);
 
     show_cursor();
     return 0;

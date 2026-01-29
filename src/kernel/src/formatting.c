@@ -132,11 +132,11 @@ void vformat_str(char* buf, const char* fmt, va_list args) {
                     _put_str(buf, &idx, str);
                     break;
                 }
-                case 'f': {
-                    f64 f = va_arg(args, f64);  // float promotes to double in varargs
-                    _float_to_str(buf, &idx, f, 6);  // 6 decimal places default
-                    break;
-                }
+                //case 'f': {
+                //    f64 f = va_arg(args, f64);  // float promotes to double in varargs
+                //    _float_to_str(buf, &idx, f, 6);  // 6 decimal places default
+                //    break;
+                //}
                 default: {
                     // Unknown specifier, just print it
                     _put_char(buf, &idx, '%');
