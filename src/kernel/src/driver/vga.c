@@ -94,9 +94,11 @@ void put_char(const char character, const u8 fg_color, const u8 bg_color){
     }
 
     if (character == '\b'){
-        if (pos-1 >=0){
+        if (pos-1 < 0){
             return;
         }
+        set_cursor_pos(pos - 1);
+        put_char(' ',fg_color, bg_color);
         set_cursor_pos(pos - 1);
         return;
     }
