@@ -8,6 +8,7 @@
 
 #define CURSOR_PORT_COMMAND 0x3D4
 #define CURSOR_PORT_DATA    0x3D5
+#define TAB_WIDTH           4
 
 #define VGA_COLOR_BLACK         0x0
 #define VGA_COLOR_BLUE          0x1
@@ -36,9 +37,10 @@ _Static_assert(sizeof(vga_char) == 2, "VGA entry must be 2 bytes");
 u16 get_cursor_pos();
 void show_cursor();
 void hide_cursor();
-void clear_win(const u8 fg_color, const u8 bg_color);
+void clear_win();
 void put_char(const char character, const u8 fg_color, const u8 bg_color);
 void put_str(const char *string, const u8 fg_color, const u8 bg_color);
 u8 vga_color(const u8 fg_color, const u8 bg_color);
 void advance_cursor();
-void set_cursor_pos(u8 x, u8 y);
+void set_cursor_pos(u16 pos);
+

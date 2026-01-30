@@ -1,11 +1,9 @@
 #include <init.h>
 #include <io.h>
-#include <driver/vga.h>
 int main(){
     init();
-    printf_color("hello\ntest",VGA_COLOR_BLUE);
-    printf_color("hello\ntest",VGA_COLOR_RED);
-
-    show_cursor();
+    for (int i = 0; i < 100; i++){
+        printf("iteration: %i\n",i);
+    }
     return 0;
 }

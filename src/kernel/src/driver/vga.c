@@ -12,7 +12,7 @@
 volatile vga_char* TEXT_AREA = (vga_char*) VGA_START;
 
 
-
+#define WHITE_SPACE ((vga_char){' ',vga_color(VGA_COLOR_BLACK,VGA_COLOR_BLACK)});
 
 
 
@@ -26,6 +26,7 @@ u16 get_cursor_pos(){
 
     return MAKE_16(low,high);
 }
+
 
 void show_cursor(){
     byte_out(CURSOR_PORT_COMMAND, CURSOR_START_ADDR);
@@ -42,40 +43,62 @@ void hide_cursor(){
 }
 
 
-void clear_win(const u8 fg_color, const u8 bg_color){
-    vga_char clear_char = {
-        .character=' ',
-        .style=vga_color(fg_color,bg_color)
-    };
-
+void clear_win(){
     for(unsigned int i = 0; i < VGA_EXTENT; i++){
-        TEXT_AREA[i] = clear_char;
+        TEXT_AREA[i] = WHITE_SPACE;
     }
 }
 
+void scroll_vga(){
+    // move all 1y up
+    for (int i = VGA_WIDTH; i < VGA_EXTENT; i++){
+        TEXT_AREA[i - VGA_WIDTH] = TEXT_AREA[i];
+    }
+    // clear last line
+    for (int i = VGA_EXTENT - VGA_WIDTH; i < VGA_EXTENT; i++){
+        TEXT_AREA[i] = WHITE_SPACE;
+    }
+    set_cursor_pos(VGA_EXTENT - VGA_WIDTH);
+}
+
+
 void put_char(const char character, const u8 fg_color, const u8 bg_color){
     u16 pos = get_cursor_pos();
+    if (pos + 1 == VGA_EXTENT){
+        scroll_vga();
+    }
     
 
     if (character == '\n'){
-        int offset = VGA_WIDTH - (pos % VGA_WIDTH)-1;
+        // just print whitespaces till next line
+        int offset = VGA_WIDTH - (pos % VGA_WIDTH);
         for (int i = 0; i < offset; i++){
-            vga_char c = {
-                .character=' ',
-                .style=vga_color(fg_color,bg_color)
-            };
-            advance_cursor(); 
-            TEXT_AREA[pos] = c;
+            put_char(' ',VGA_COLOR_BLACK,VGA_COLOR_BLACK);
         }
         return;
     }
 
     if (character == '\t'){
-
+        // print whitespaces to fill a TAB_WIDTH sized grid
+        int offset = TAB_WIDTH - (pos % TAB_WIDTH);
+        for (int i = 0; i < offset; i++){
+            put_char(' ',VGA_COLOR_BLACK,VGA_COLOR_BLACK);
+        }
+        return;
     }
 
     if (character == '\r'){
+        // return to the begin of the line
+        set_cursor_pos(pos - pos%VGA_WIDTH);
+        return;
+    }
 
+    if (character == '\b'){
+        if (pos-1 >=0){
+            return;
+        }
+        set_cursor_pos(pos - 1);
+        return;
     }
 
     vga_char c = {
@@ -83,13 +106,13 @@ void put_char(const char character, const u8 fg_color, const u8 bg_color){
         .style=vga_color(fg_color,bg_color)
     };
     TEXT_AREA[pos] = c;
+    advance_cursor(); 
 }
 
 void put_str(const char *string, const u8 fg_color, const u8 bg_color){
     while (*string != '\0')
     {
         put_char(*string++, fg_color, bg_color);
-        advance_cursor(); 
     }
 }
 
@@ -117,9 +140,7 @@ void advance_cursor(){
 }
 
 
-void set_cursor_pos(u8 x, u8 y){
-    u16 pos = x + ((u16) VGA_WIDTH * y);
-
+void set_cursor_pos(u16 pos){
     if (pos >= VGA_EXTENT){
         pos = VGA_EXTENT - 1;
     }
